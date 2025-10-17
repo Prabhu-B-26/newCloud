@@ -9,7 +9,7 @@ function RegisterPage() {
   const handleRegister = async () => {
     try {
       console.log(form); // Log form data for debugging
-      const res = await axios.post("http://localhost:5000/register", form);
+      const res = await axios.post("/api/register", form);
       alert("Registered successfully. Please login.");
       window.location.href = "/login";
     } catch (error) {

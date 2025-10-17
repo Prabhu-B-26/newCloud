@@ -8,7 +8,7 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/login", form);
+      const res = await axios.post("/api/login", form);
       alert("Login successful");
       localStorage.setItem("studentId", res.data.user._id);
       window.location.href = "/timetable";

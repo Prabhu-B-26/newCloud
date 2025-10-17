@@ -10,7 +10,7 @@ function AttendancePage() {
   const [timetable, setTimetable] = useState({});
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/timetable/${studentId}`).then((res) => {
+    axios.get(`/api/timetable/${studentId}`).then((res) => {
       if (res.data?.timetable) setTimetable(res.data.timetable);
     });
   }, []);
@@ -34,7 +34,7 @@ function AttendancePage() {
 
   const submitAttendance = async () => {
     try {
-      await axios.post("http://localhost:5000/mark-attendance", {
+      await axios.post("/api/mark-attendance", {
         studentId,
         date: selectedDate,
         dailyAttendance: attendance,

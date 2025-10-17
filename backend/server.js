@@ -1,11 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const path = require("path");
 const { BlobServiceClient } = require("@azure/storage-blob");
 require("dotenv").config();
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Azure Storage setup
 const blobServiceClient = BlobServiceClient.fromConnectionString(
@@ -32,6 +33,9 @@ async function ensureContainersExist() {
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the React app build directory
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Helper Functions
 async function uploadBlob(containerName, blobName, data) {
@@ -80,12 +84,8 @@ async function streamToString(readableStream) {
 
 // Routes
 
-app.get("/", (req, res) => {
-  res.send("Backend is working!");
-});
-
 // User Registration
-app.post("/register", async (req, res) => {
+app.post("/api/register", async (req, res) => {
   const { username, password } = req.body;
   try {
     const existingUser = await downloadBlob("users", username);
@@ -102,7 +102,7 @@ app.post("/register", async (req, res) => {
 });
 
 // User Login
-app.post("/login", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await downloadBlob("users", username);
@@ -119,7 +119,7 @@ app.post("/login", async (req, res) => {
 });
 
 // Mark Attendance
-app.post("/mark-attendance", async (req, res) => {
+app.post("/api/mark-attendance", async (req, res) => {
   const { studentId, date, dailyAttendance } = req.body;
   if (!studentId || !date || !dailyAttendance) {
     return res.status(400).json({ message: "Missing fields" });
@@ -135,7 +135,7 @@ app.post("/mark-attendance", async (req, res) => {
 });
 
 // Get Attendance
-app.get("/attendance/:studentId/:date", async (req, res) => {
+app.get("/api/attendance/:studentId/:date", async (req, res) => {
   try {
     const { studentId, date } = req.params;
     const blobName = `${studentId}/${date}`;
@@ -149,7 +149,7 @@ app.get("/attendance/:studentId/:date", async (req, res) => {
 });
 
 // Save Timetable
-app.post("/timetable", async (req, res) => {
+app.post("/api/timetable", async (req, res) => {
   const { studentId, timetable } = req.body;
   if (!studentId || !timetable) return res.status(400).json({ message: "Missing data" });
   try {
@@ -162,7 +162,7 @@ app.post("/timetable", async (req, res) => {
 });
 
 // Get Timetable
-app.get("/timetable/:studentId", async (req, res) => {
+app.get("/api/timetable/:studentId", async (req, res) => {
   try {
     const result = await downloadBlob("timetables", req.params.studentId);
     res.status(200).json(result || {});
@@ -173,7 +173,7 @@ app.get("/timetable/:studentId", async (req, res) => {
 });
 
 // Attendance Report
-app.get("/report/:studentId", async (req, res) => {
+app.get("/api/report/:studentId", async (req, res) => {
   try {
     const studentId = req.params.studentId;
     const records = [];
@@ -206,6 +206,11 @@ app.get("/report/:studentId", async (req, res) => {
     console.error("Error generating report:", err);
     res.status(500).json({ message: "Error generating report", error: err.message });
   }
+});
+
+// Catch-all handler: send back React's index.html file for any non-API routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 // Start server

@@ -10,7 +10,7 @@ function TimetablePage() {
   );
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/timetable/${studentId}`).then((res) => {
+    axios.get(`/api/timetable/${studentId}`).then((res) => {
       if (res.data?.timetable) setTimetable(res.data.timetable);
     });
   }, []);
@@ -23,7 +23,7 @@ function TimetablePage() {
 
   const saveTimetable = async () => {
     try {
-      await axios.post("http://localhost:5000/timetable", {
+      await axios.post("/api/timetable", {
         studentId,
         timetable,
       });

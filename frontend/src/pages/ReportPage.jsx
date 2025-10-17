@@ -8,7 +8,7 @@ function ReportPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/report/${studentId}`)
+      .get(`/api/report/${studentId}`)
       .then((res) => setReport(res.data))
       .catch(() => alert("Error loading report"));
   }, []);
