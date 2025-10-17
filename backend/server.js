@@ -209,7 +209,8 @@ app.get("/api/report/:studentId", async (req, res) => {
 });
 
 // Catch-all handler: send back React's index.html file for any non-API routes
-app.get("*", (req, res) => {
+// Use an explicit wildcard pattern compatible with Express 5/path-to-regexp
+app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/dist/index.html'));
 });
 
