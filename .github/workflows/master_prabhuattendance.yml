@@ -26,14 +26,12 @@ jobs:
         working-directory: ./backend
         run: |
           npm install
-          npm run build --if-present
 
       # ✅ Install & build frontend (optional, remove if not needed)
       - name: Install and build frontend
         working-directory: ./frontend
         run: |
           npm install
-          npm run build --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -68,3 +66,4 @@ jobs:
           app-name: 'PrabhuAttendance'
           slot-name: 'Production'
           package: .
+
