@@ -37,7 +37,13 @@ jobs:
           npm run build --if-present
           npm run test --if-present
 
-      # ✅ Upload ONLY backend for deployment
+      # ✅ Copy frontend build to backend for serving
+      - name: Copy frontend build to backend
+        run: |
+          mkdir -p ./backend/frontend
+          cp -r ./frontend/dist ./backend/frontend/
+
+      # ✅ Upload backend with frontend for deployment
       - name: Upload backend for deployment
         uses: actions/upload-artifact@v4
         with:

@@ -35,7 +35,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the React app build directory
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
 
 // Helper Functions
 async function uploadBlob(containerName, blobName, data) {
@@ -210,7 +210,7 @@ app.get("/api/report/:studentId", async (req, res) => {
 
 // Catch-all handler: send back React's index.html file for any non-API routes
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  res.sendFile(path.join(__dirname, 'frontend/dist/index.html'));
 });
 
 // Start server
